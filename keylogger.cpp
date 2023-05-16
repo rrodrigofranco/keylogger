@@ -32,6 +32,54 @@ bool SpecialKeys(int S_Key)
         cout << ".";
         LOG(".");
         return true;
+    case VK_OEM_7:
+        cout << "'";
+        LOG("'");
+        return true;
+    case VK_OEM_1:
+        cout << ";";
+        LOG(";");
+        return true;
+    case VK_OEM_COMMA:
+        cout << ",";
+        LOG(",");
+        return true;
+    case VK_OEM_PLUS:
+        cout << "+";
+        LOG("+");
+        return true;
+    case VK_OEM_MINUS:
+        cout << "-";
+        LOG("-");
+        return true;
+    case VK_OEM_2:
+        cout << "/";
+        LOG("/");
+        return true;
+    case VK_OEM_3:
+        cout << "`";
+        LOG("`");
+        return true;
+    case VK_OEM_5:
+        cout << "\\";
+        LOG("\\");
+        return true;
+    case VK_OEM_4:
+        cout << "[";
+        LOG("[");
+        return true;
+    case VK_OEM_6:
+        cout << "]";
+        LOG("]");
+        return true;
+    case VK_OEM_102:
+        cout << "<";
+        LOG("<");
+        return true;
+    case VK_OEM_8:
+        cout << "~";
+        LOG("~");
+        return true;
     case VK_SHIFT:
         cout << "#SHIFT#";
         LOG("#SHIFT#");
